@@ -1,0 +1,4 @@
+include README.md LICENSE CHANGELOG.md
+global-include CMakeLists.txt *.cmake
+recursive-include src *
+recursive-include ext/pybind11/include *.h

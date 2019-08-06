@@ -1,0 +1,6 @@
+pybind11_add_module(ikfast_kuka_kr6_r900
+	ikfast_pybind_kuka_kr6_r900.cpp
+	ikfast0x1000004a.Transform6D.0_1_2_3_4_5.cpp
+	)
+
+# set_target_properties(kuka_kr6_r900 PROPERTIES OUTPUT_NAME ikfast_pybind/kuka_kr6_r900)
