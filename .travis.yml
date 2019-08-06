@@ -62,7 +62,7 @@ before_install:
       pip install --user --upgrade pip virtualenv;
       python -m virtualenv -p python$PYTHON venv;
       source venv/bin/activate;
-      pip install pytest, numpy
+      pip install pytest numpy
     elif [ "$TRAVIS_OS_NAME" == "windows" ]; then
       tools/travis-cache-windows.sh restore;
       # cinst -y --no-progress python3;
@@ -72,7 +72,7 @@ before_install:
       echo "PATH=$PATH";
       # pip3 install --disable-pip-version-check --user --upgrade pip setuptools
       python --version
-      pip install setuptools, pytest, numpy
+      pip install setuptools pytest numpy
     fi
   elif [ -n "$CONDA" ]; then
     if [ "$TRAVIS_OS_NAME" == "linux" ]; then OS=Linux-x86_64; else OS=MacOSX-x86_64; fi
