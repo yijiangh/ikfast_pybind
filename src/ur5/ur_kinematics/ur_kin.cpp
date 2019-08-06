@@ -1,5 +1,7 @@
 #include "ur_kin.h"
 
+#define IKPI  ((double)3.14159265358979)
+
 namespace ur_kinematics {
 
   void forward(const double* q, double* T) {
@@ -182,10 +184,10 @@ namespace ur_kinematics {
         if(fabs(arcsin) < ZERO_THRESH)
           arcsin = 0.0;
         if(arcsin < 0.0)
-          q1[0] = arcsin + 2.0*PI;
+          q1[0] = arcsin + 2.0*IKPI;
         else
           q1[0] = arcsin;
-        q1[1] = PI - arcsin;
+        q1[1] = IKPI - arcsin;
       }
       else if(fabs(B) < ZERO_THRESH) {
         double div;
@@ -195,7 +197,7 @@ namespace ur_kinematics {
           div = d4/A;
         double arccos = acos(div);
         q1[0] = arccos;
-        q1[1] = 2.0*PI - arccos;
+        q1[1] = 2.0*IKPI - arccos;
       }
       else if(d4*d4 > R) {
         return num_sols;
@@ -212,11 +214,11 @@ namespace ur_kinematics {
         if(pos >= 0.0)
           q1[0] = pos;
         else
-          q1[0] = 2.0*PI + pos;
+          q1[0] = 2.0*IKPI + pos;
         if(neg >= 0.0)
           q1[1] = neg;
         else
-          q1[1] = 2.0*PI + neg;
+          q1[1] = 2.0*IKPI + neg;
       }
     }
     ////////////////////////////////////////////////////////////////////////////////
@@ -233,7 +235,7 @@ namespace ur_kinematics {
           div = numer / d6;
         double arccos = acos(div);
         q5[i][0] = arccos;
-        q5[i][1] = 2.0*PI - arccos;
+        q5[i][1] = 2.0*IKPI - arccos;
       }
     }
     ////////////////////////////////////////////////////////////////////////////////
@@ -253,7 +255,7 @@ namespace ur_kinematics {
             if(fabs(q6) < ZERO_THRESH)
               q6 = 0.0;
             if(q6 < 0.0)
-              q6 += 2.0*PI;
+              q6 += 2.0*IKPI;
           }
           ////////////////////////////////////////////////////////////////////////////////
 
@@ -275,7 +277,7 @@ namespace ur_kinematics {
           }
           double arccos = acos(c3);
           q3[0] = arccos;
-          q3[1] = 2.0*PI - arccos;
+          q3[1] = 2.0*IKPI - arccos;
           double denom = a2*a2 + a3*a3 + 2*a2*a3*c3;
           double s3 = sin(arccos);
           double A = (a2 + a3*c3), B = a3*s3;
@@ -291,10 +293,10 @@ namespace ur_kinematics {
           for(int k=0;k<2;k++) {
             if(fabs(q2[k]) < ZERO_THRESH)
               q2[k] = 0.0;
-            else if(q2[k] < 0.0) q2[k] += 2.0*PI;
+            else if(q2[k] < 0.0) q2[k] += 2.0*IKPI;
             if(fabs(q4[k]) < ZERO_THRESH)
               q4[k] = 0.0;
-            else if(q4[k] < 0.0) q4[k] += 2.0*PI;
+            else if(q4[k] < 0.0) q4[k] += 2.0*IKPI;
             q_sols[num_sols*6+0] = q1[i];    q_sols[num_sols*6+1] = q2[k];
             q_sols[num_sols*6+2] = q3[k];    q_sols[num_sols*6+3] = q4[k];
             q_sols[num_sols*6+4] = q5[i][j]; q_sols[num_sols*6+5] = q6;
@@ -406,7 +408,7 @@ int main(int argc, char* argv[])
     printf("%1.6f %1.6f %1.6f %1.6f %1.6f %1.6f\n",
        q_sols[i*6+0], q_sols[i*6+1], q_sols[i*6+2], q_sols[i*6+3], q_sols[i*6+4], q_sols[i*6+5]);
   for(int i=0;i<=4;i++)
-    printf("%f ", PI/2.0*i);
+    printf("%f ", IKPI/2.0*i);
   printf("\n");
   return 0;
 }

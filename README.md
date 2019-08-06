@@ -1,8 +1,6 @@
 # ikfast_pybind - generating unified python bindings for IKFast
-<!-- [![Build Status](https://travis-ci.com/yijiangh/conmech.svg?branch=master)](https://travis-ci.com/yijiangh/conmech) -->
-
+[![Build Status](https://travis-ci.com/yijiangh/ikfast_pybind.svg?branch=master)](https://travis-ci.com/yijiangh/ikfast_pybind)
 [![GitHub - License](https://img.shields.io/github/license/yijiangh/conmech)](./LICENSE)
-
 <!-- [![PyPI - Python Version](https://img.shields.io/badge/python-2.5+|3.x-blue)](https://pypi.org/project/pyconmech/)
 
 [![PyPI - Latest Release](https://img.shields.io/badge/pypi-v0.1.1-orange)](https://pypi.org/project/pyconmech/) -->
