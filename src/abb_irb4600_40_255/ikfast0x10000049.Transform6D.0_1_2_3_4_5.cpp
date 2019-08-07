@@ -62,10 +62,12 @@ using namespace ikfast;
 
 #ifdef _MSC_VER
 #ifndef isnan
-#define isnan _isnan
+// #define isnan _isnan
+#define isnan std::isnan
 #endif
 #ifndef isinf
-#define isinf _isinf
+// #define isinf _isinf
+#define isinf std::isinf
 #endif
 //#ifndef isfinite
 //#define isfinite _isfinite
