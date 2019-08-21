@@ -7,7 +7,8 @@
 #define IKFAST_HAS_LIBRARY
 #endif
 
-#include <ur5/ur_kinematics/ikfast.h>
+#include <ur5/ur_kinematics_updated/ikfast.h>
+// #include <ur5/ur_kinematics/ikfast.h>
 
 #ifdef IKFAST_NAMESPACE
 using namespace IKFAST_NAMESPACE;
@@ -28,12 +29,14 @@ PYBIND11_MODULE(ikfast_ur5, m)
     )pbdoc";
 
     m.def("get_ik", [](const std::vector<double> &trans_list,
-                       const std::vector<std::vector<double>> &rot_list)
+                       const std::vector<std::vector<double>> &rot_list,
+                       const double &q6_sample = 0)
     {
       using namespace ikfast;
       IkSolutionList<double> solutions;
 
       std::vector<double> vfree(GetNumFreeParameters());
+      vfree.push_back(q6_sample);
       double eerot[9], eetrans[3];
 
       for(std::size_t i = 0; i < 3; ++i)
@@ -77,6 +80,7 @@ PYBIND11_MODULE(ikfast_ur5, m)
     },
     py::arg("trans_list"),
     py::arg("rot_list"),
+    py::arg("q6_sample") = 0,
     R"pbdoc(
         get inverse kinematic solutions for ur5
     )pbdoc");
