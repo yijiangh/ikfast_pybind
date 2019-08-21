@@ -33,7 +33,7 @@ EXT_MODULES = [CMakeExtension('ikfast_kuka_kr6_r900'),
 
 setup(
     name='ikfast_pybind',
-    version='0.0.1',
+    version='0.0.2',
     license='MIT License',
     description='ikfast_pybind is a python binding generation library for the analytic kinematics engine ikfast.',
     author='Yijiang Huang',
