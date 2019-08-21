@@ -12,12 +12,12 @@ ikfast_pybind
     :target: ./LICENSE
     :alt: License MIT
 
-.. .. image:: https://img.shields.io/badge/python-2.5+|3.x-blue
+.. image:: https://img.shields.io/badge/python-2.5+|3.x-blue
     :target: https://pypi.org/project/ikfast_pybind/
     :alt: PyPI - Python Version
 
 .. image:: https://img.shields.io/badge/pypi-v0.0.1-orange
-    :target: https://pypi.org/project/pyconmech/
+    :target: https://pypi.org/project/ikfast_pybind/
     :alt: PyPI - Latest Release
 
 
