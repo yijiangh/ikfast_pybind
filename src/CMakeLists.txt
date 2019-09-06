@@ -4,6 +4,7 @@ include_directories(
 
 add_subdirectory(kuka_kr6_r900)
 add_subdirectory(abb_irb4600_40_255)
+add_subdirectory(ur3)
 add_subdirectory(ur5)
 
 # keep adding folders here...

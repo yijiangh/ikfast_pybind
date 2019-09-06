@@ -29,7 +29,8 @@ long_description = read('README.rst')
 
 EXT_MODULES = [CMakeExtension('ikfast_kuka_kr6_r900'),
                CMakeExtension('ikfast_abb_irb4600_40_255'),
-               CMakeExtension('ikfast_ur5')]
+               CMakeExtension('ikfast_ur5'),
+               CMakeExtension('ikfast_ur3')]
 
 setup(
     name='ikfast_pybind',

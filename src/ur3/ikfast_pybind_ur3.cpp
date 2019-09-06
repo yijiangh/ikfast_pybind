@@ -7,7 +7,8 @@
 #define IKFAST_HAS_LIBRARY
 #endif
 
-#include <ur5/ur_kinematics/ikfast.h>
+#include <ur3/ur_kinematics/ikfast.h>
+// #include <ur5/ur_kinematics/ikfast.h>
 
 #ifdef IKFAST_NAMESPACE
 using namespace IKFAST_NAMESPACE;
@@ -15,12 +16,12 @@ using namespace IKFAST_NAMESPACE;
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(ikfast_ur5, m)
+PYBIND11_MODULE(ikfast_ur3, m)
 {
     m.doc() = R"pbdoc(
-        ur5
+        ur3
         -----------------------
-        .. currentmodule:: ikfast_ur5
+        .. currentmodule:: ikfast_ur3
         .. autosummary::
            :toctree: _generate
            get_ik

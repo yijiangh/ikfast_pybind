@@ -22,3 +22,5 @@ cmake-build-debug/
 .tags1
 
 .cache
+
+.vscode
