@@ -9,15 +9,18 @@ and this project adheres to `Semantic Versioning <http://semver.org/spec/v2.0.0.
 
 0.0.2
 ----------
-
-**Changed**
-
+**Available robots**
+- kuka_kr6_r900 (tested)
+- ur3
+- ur5
+- abb_irb4600_40_255
+- franka_panda (tested)
+- eth_rfl (tested)
 
 **Added**
+Modules for `franka_panda`, `eth_rfl` robots.
 
 Add ifkast modules for `ur5`, `kuka_kr6_r900`, `abb_irb4600`. `abb_irb4600` test fails some time randomly - need to regenerate its IKfast cpp files (might be the floating point truncation issue).
 
 Include the upstreamed `ur_kinematics commit 6734142 July 2 2019 <https://github.com/ros-industrial/universal_robot/tree/9eccd19077c2e7b853e3a3215bce9f38b77adda5/ur_kinematics>`__
 but it seems that the old one works more stably... I will do more tests on this.
-
-**Removed**

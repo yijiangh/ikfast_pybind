@@ -7,8 +7,7 @@
 #define IKFAST_HAS_LIBRARY
 #endif
 
-#include <ur3/ur_kinematics/ikfast.h>
-// #include <ur5/ur_kinematics/ikfast.h>
+#include <franka_panda/ikfast.h>
 
 #ifdef IKFAST_NAMESPACE
 using namespace IKFAST_NAMESPACE;
@@ -16,12 +15,12 @@ using namespace IKFAST_NAMESPACE;
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(ikfast_ur3, m)
+PYBIND11_MODULE(ikfast_franka_panda, m)
 {
     m.doc() = R"pbdoc(
-        ur3
+        franka_panda
         -----------------------
-        .. currentmodule:: ikfast_ur3
+        .. currentmodule:: franka_panda
         .. autosummary::
            :toctree: _generate
            get_ik
@@ -38,10 +37,9 @@ PYBIND11_MODULE(ikfast_ur3, m)
       if (free_jt_vals.size() != GetNumFreeParameters()){
           return std::vector<std::vector<double>>();
       }
-      double eerot[9], eetrans[3];
 
-      for(std::size_t i = 0; i < 3; ++i)
-      {
+      double eerot[9], eetrans[3];
+      for(std::size_t i = 0; i < 3; ++i) {
           eetrans[i] = trans_list[i];
           std::vector<double> rot_vec = rot_list[i];
           for(std::size_t j = 0; j < 3; ++j)
@@ -83,7 +81,7 @@ PYBIND11_MODULE(ikfast_ur3, m)
     py::arg("rot_list"),
     py::arg("free_jt_vals"),
     R"pbdoc(
-        get inverse kinematic solutions for ur5
+        get inverse kinematic solutions for franka_panda
     )pbdoc");
 
     m.def("get_fk", [](const std::vector<double> &joint_list)
@@ -119,7 +117,7 @@ PYBIND11_MODULE(ikfast_ur3, m)
     },
     py::arg("joint_list"),
     R"pbdoc(
-        get forward kinematic solutions for ur5
+        get forward kinematic solutions for the franka_panda robot
     )pbdoc");
 
     m.def("get_dof", []()

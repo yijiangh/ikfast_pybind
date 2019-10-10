@@ -7,8 +7,7 @@
 #define IKFAST_HAS_LIBRARY
 #endif
 
-#include <ur3/ur_kinematics/ikfast.h>
-// #include <ur5/ur_kinematics/ikfast.h>
+#include <eth_rfl/ikfast.h>
 
 #ifdef IKFAST_NAMESPACE
 using namespace IKFAST_NAMESPACE;
@@ -16,12 +15,12 @@ using namespace IKFAST_NAMESPACE;
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(ikfast_ur3, m)
+PYBIND11_MODULE(ikfast_eth_rfl, m)
 {
     m.doc() = R"pbdoc(
-        ur3
+        ikfast_pybind_eth_rfl
         -----------------------
-        .. currentmodule:: ikfast_ur3
+        .. currentmodule:: ikfast_pybind_eth_rfl
         .. autosummary::
            :toctree: _generate
            get_ik
@@ -38,6 +37,7 @@ PYBIND11_MODULE(ikfast_ur3, m)
       if (free_jt_vals.size() != GetNumFreeParameters()){
           return std::vector<std::vector<double>>();
       }
+      
       double eerot[9], eetrans[3];
 
       for(std::size_t i = 0; i < 3; ++i)
@@ -83,7 +83,7 @@ PYBIND11_MODULE(ikfast_ur3, m)
     py::arg("rot_list"),
     py::arg("free_jt_vals"),
     R"pbdoc(
-        get inverse kinematic solutions for ur5
+        get inverse kinematic solutions for pybind_eth_efl
     )pbdoc");
 
     m.def("get_fk", [](const std::vector<double> &joint_list)
@@ -119,7 +119,7 @@ PYBIND11_MODULE(ikfast_ur3, m)
     },
     py::arg("joint_list"),
     R"pbdoc(
-        get forward kinematic solutions for ur5
+        get forward kinematic solutions for kuka_kr6_r900
     )pbdoc");
 
     m.def("get_dof", []()
@@ -129,7 +129,6 @@ PYBIND11_MODULE(ikfast_ur3, m)
     R"pbdoc(
         get number dofs configured for the ikfast module
     )pbdoc");
-
 
     m.def("get_free_dof", []()
     {

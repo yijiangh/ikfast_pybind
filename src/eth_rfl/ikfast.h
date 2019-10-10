@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-// Copyright (C) 2012 Rosen Diankov <rosen.diankov@gmail.com>
+// Copyright (C) 2012-2014 Rosen Diankov <rosen.diankov@gmail.com>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,12 +33,14 @@
 #include <vector>
 #include <list>
 #include <stdexcept>
+#include <cmath>
 
 #ifndef IKFAST_HEADER_COMMON
 #define IKFAST_HEADER_COMMON
 
 /// should be the same as ikfast.__version__
-#define IKFAST_VERSION 61
+/// if 0x10000000 bit is set, then the iksolver assumes 6D transforms are done without the manipulator offset taken into account (allows to reuse IK when manipulator offset changes)
+#define IKFAST_VERSION 0x10000048
 
 namespace ikfast {
 
@@ -81,6 +83,7 @@ public:
 
     /// \brief Gets the indices of the configuration space that have to be preset before a full solution can be returned
     ///
+    /// 0 always points to the first value accepted by the ik function.
     /// \return vector of indices indicating the free parameters
     virtual const std::vector<int>& GetFree() const = 0;
 
@@ -99,7 +102,7 @@ public:
     /// \brief add one solution and return its index for later retrieval
     ///
     /// \param vinfos Solution data for each degree of freedom of the manipulator
-    /// \param vfree If the solution represents an infinite space, holds free parameters of the solution that users can freely set.
+    /// \param vfree If the solution represents an infinite space, holds free parameters of the solution that users can freely set. The indices are of the configuration that the IK solver accepts rather than the entire robot, ie 0 points to the first value accepted.
     virtual size_t AddSolution(const std::vector<IkSingleDOFSolutionBase<T> >& vinfos, const std::vector<int>& vfree) = 0;
 
     /// \brief returns the solution pointer
@@ -117,12 +120,14 @@ template <typename T>
 class IkFastFunctions
 {
 public:
-    IkFastFunctions() : _ComputeIk(NULL), _ComputeFk(NULL), _GetNumFreeParameters(NULL), _GetFreeParameters(NULL), _GetNumJoints(NULL), _GetIkRealSize(NULL), _GetIkFastVersion(NULL), _GetIkType(NULL), _GetKinematicsHash(NULL) {
+    IkFastFunctions() : _ComputeIk(NULL), _ComputeIk2(NULL), _ComputeFk(NULL), _GetNumFreeParameters(NULL), _GetFreeParameters(NULL), _GetNumJoints(NULL), _GetIkRealSize(NULL), _GetIkFastVersion(NULL), _GetIkType(NULL), _GetKinematicsHash(NULL) {
     }
     virtual ~IkFastFunctions() {
     }
     typedef bool (*ComputeIkFn)(const T*, const T*, const T*, IkSolutionListBase<T>&);
     ComputeIkFn _ComputeIk;
+    typedef bool (*ComputeIk2Fn)(const T*, const T*, const T*, IkSolutionListBase<T>&, void*);
+    ComputeIk2Fn _ComputeIk2;
     typedef void (*ComputeFkFn)(const T*, T*, T*);
     ComputeFkFn _ComputeFk;
     typedef int (*GetNumFreeParametersFn)();
@@ -193,6 +198,9 @@ public:
                 if( _vbasesol[i].indices[1] != (unsigned char)-1 && _vbasesol[i].indices[1] >= _vbasesol[i].maxsolutions ) {
                     throw std::runtime_error("2nd index >= max solutions for joint");
                 }
+            }
+            if( !std::isfinite(_vbasesol[i].foffset) ) {
+                throw std::runtime_error("foffset was not finite");
             }
         }
     }
@@ -296,6 +304,10 @@ typedef double IkReal;
    - For **TranslationLocalGlobal6D**, the diagonal elements ([0],[4],[8]) are the local translation inside the end effector coordinate system.
  */
 IKFAST_API bool ComputeIk(const IkReal* eetrans, const IkReal* eerot, const IkReal* pfree, ikfast::IkSolutionListBase<IkReal>& solutions);
+
+/** \brief Similar to ComputeIk except takes OpenRAVE boost::shared_ptr<RobotBase::Manipulator>*
+ */
+IKFAST_API bool ComputeIk2(const IkReal* eetrans, const IkReal* eerot, const IkReal* pfree, ikfast::IkSolutionListBase<IkReal>& solutions, void* pOpenRAVEManip);
 
 /// \brief Computes the end effector coordinates given the joint values. This function is used to double check ik.
 IKFAST_API void ComputeFk(const IkReal* joints, IkReal* eetrans, IkReal* eerot);

@@ -215,7 +215,8 @@ def test(ctx, checks=True, build=False):
             # ctx.run('pip install --verbose dist/*.tar.gz') #bdist_wheel
 
         log.write('Running pytest')
-        ctx.run('pytest --doctest-module')
+        # ctx.run('pytest --doctest-module')
+        ctx.run('pytest')
 
 @task(help={
       'release_type': 'Type of release follows semver rules. Must be one of: major, minor, patch.',

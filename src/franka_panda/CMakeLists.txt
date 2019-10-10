@@ -1,0 +1,4 @@
+pybind11_add_module(ikfast_franka_panda
+	ikfast_pybind_franka_panda.cpp
+	ikfast0x10000049.Transform6D.0_1_2_3_4_5_f6.cpp
+	)

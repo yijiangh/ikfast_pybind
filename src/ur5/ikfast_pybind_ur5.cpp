@@ -29,13 +29,15 @@ PYBIND11_MODULE(ikfast_ur5, m)
 
     m.def("get_ik", [](const std::vector<double> &trans_list,
                        const std::vector<std::vector<double>> &rot_list,
-                       const double &q6_sample = 0)
+                       const std::vector<double> &free_jt_vals)
+                    // TODO: default value
     {
       using namespace ikfast;
       IkSolutionList<double> solutions;
 
-      std::vector<double> vfree(GetNumFreeParameters());
-      vfree.push_back(q6_sample);
+      if (free_jt_vals.size() != GetNumFreeParameters()){
+          return std::vector<std::vector<double>>();
+      }
       double eerot[9], eetrans[3];
 
       for(std::size_t i = 0; i < 3; ++i)
@@ -49,7 +51,7 @@ PYBIND11_MODULE(ikfast_ur5, m)
       }
 
       // call ikfast routine
-      bool b_success = ComputeIk(eetrans, eerot, &vfree[0], solutions);
+      bool b_success = ComputeIk(eetrans, eerot, &free_jt_vals[0], solutions);
 
       std::vector<std::vector<double>> solution_list;
       if (!b_success)
@@ -79,7 +81,7 @@ PYBIND11_MODULE(ikfast_ur5, m)
     },
     py::arg("trans_list"),
     py::arg("rot_list"),
-    py::arg("q6_sample") = 0,
+    py::arg("free_jt_vals"),
     R"pbdoc(
         get inverse kinematic solutions for ur5
     )pbdoc");

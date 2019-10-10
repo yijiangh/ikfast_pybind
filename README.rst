@@ -21,10 +21,11 @@ ikfast_pybind
     :alt: PyPI - Latest Release
 
 
-**ikfast_pybind** is a python binding generation library for the analytic kinematics engine `IKfast <http://openrave.org/docs/1.8.2/openravepy/ikfast/>`__. The python bindings are generated via [pybind11](https://github.com/pybind/pybind11>`_ a `CMake <https://cmake.org/>`_-based build system.
+**ikfast_pybind** is a python binding generation library for the analytic kinematics engine `IKfast <http://openrave.org/docs/1.8.2/openravepy/ikfast/>`__. 
+The python bindings are generated via `pybind11 <https://github.com/pybind/pybind11>`_ a `CMake <https://cmake.org/>`_-based build system.
 
 **Note:** You need the ikfast `.h` and `.cpp` ready to generate the python bindings. This *URDF-to-cpp* generation part needs to be done with `openrave` and **IS NOT** done by this repo, 
-please see `this tutorial <https://github.com/yijiangh/Choreo/blob/7c98fd29120e5ce75d2b8ed17bc49488ad983cb6/framefab_robot/abb/framefab_irb6600/framefab_irb6600_support/doc/ikfast_tutorial.rst>`_ for details.
+please see `this tutorial <http://docs.ros.org/kinetic/api/framefab_irb6600_support/html/doc/ikfast_tutorial.html>`_ for details.
 
 The assembly sequence and motion planning framework `pychoreo <https://github.com/yijiangh/pychoreo>`_ 
 relies on this library to generate compatible IK modules for robots across brands, scales, and dofs.
@@ -92,13 +93,8 @@ please cite `OpenRave <http://openrave.org/>`_:
 Related links
 ^^^^^^^^^^^^^
 
-`tutorial on ikfast cpp generation <https://github.com/yijiangh/Choreo/blob/7c98fd29120e5ce75d2b8ed17bc49488ad983cb6/framefab_robot/abb/framefab_irb6600/framefab_irb6600_support/doc/ikfast_tutorial.rst>`_: See this tutorial for a detailed instruction on how to generate the ikfast cpp code from an URDF.
+`tutorial on ikfast cpp generation <http://docs.ros.org/kinetic/api/framefab_irb6600_support/html/doc/ikfast_tutorial.html>`_: See this tutorial for a detailed instruction on how to generate the ikfast cpp code from an URDF.
 
 `Testing ikfast modules with a pick-n-place demo in pybullet <https://github.com/yijiangh/conrob_pybullet/tree/master/debug_examples>`_
 
-`ur_kinematics <http://wiki.ros.org/ur_kinematics>`_: 
-Provides forward and inverse kinematics for Universal Robots. This repo is a part of `ROS Industrial <http://wiki.ros.org/Industrial>`_ program.
-
-`ikfastpy <https://github.com/andyzeng/ikfastpy>`_: Python wrapper over OpenRave's IKFast inverse kinematics solver for a UR5 robot arm.
-
-`pybind11 <https://github.com/pybind/pybind11>`_
+pybind11_
