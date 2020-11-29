@@ -15,12 +15,12 @@ using namespace IKFAST_NAMESPACE;
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(ikfast_abb_irb4600_40_255, m)
+PYBIND11_MODULE(ikfast_irb4600_40, m)
 {
     m.doc() = R"pbdoc(
-        ikfast_pybind_abb_irb4600_40_255
+        ikfast_pybind_irb4600_40
         -----------------------
-        .. currentmodule:: ikfast_pybind_abb_irb4600_40_255
+        .. currentmodule:: ikfast_pybind_irb4600_40
         .. autosummary::
            :toctree: _generate
            get_ik
