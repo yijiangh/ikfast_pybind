@@ -1,0 +1,4 @@
+pybind11_add_module(ikfast_kukakr120r2500pro
+	ikfast_pybind_kukakr120r2500pro.cpp
+	ikfast61_kukakr120r2500pro.cpp
+	)
