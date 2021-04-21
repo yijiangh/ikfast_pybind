@@ -22,10 +22,10 @@ def read(*names, **kwargs):
 
 
 long_description = read('README.rst')
-# requirements = read('requirements.txt').split('\n')
-# optional_requirements = {
-# }
 
+requirements = [
+    'cmake>=3.18',
+]
 
 EXT_MODULES = [CMakeExtension('ikfast_kuka_kr6_r900'),
                CMakeExtension('ikfast_abb_irb4600_40_255'),
@@ -66,4 +66,5 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     keywords=['Robotics', 'kinematics'],
+    install_requires=requirements,
 )
