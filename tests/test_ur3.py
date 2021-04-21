@@ -3,7 +3,7 @@ import numpy as np
 from utils import check_q
 
 @pytest.mark.ur3
-@pytest.mark.skip(reason='The ur3 ikfast module seems to be very unstable. Ignore this while we are still debugging')
+# @pytest.mark.skip(reason='The ur3 ikfast module seems to be very unstable. Ignore this while we are still debugging')
 def test_ur3(n_attempts):
     from ikfast_ur3 import get_fk, get_ik, get_dof, get_free_dof
     print('*****************\n UR5 ikfast_pybind test')

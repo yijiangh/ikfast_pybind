@@ -2,8 +2,8 @@ import pytest
 import numpy as np
 from utils import check_q
 
-@pytest.mark.abb
-@pytest.mark.skip(reason='This ikfast cpp module need to be regenerated.')
+@pytest.mark.abb_irb4600_40_255
+# @pytest.mark.skip(reason='This ikfast cpp module need to be regenerated.')
 def test_abb_irb4600_40_255(n_attempts):
     from ikfast_abb_irb4600_40_255 import get_fk, get_ik, get_dof, get_free_dof
     print('*****************\n ABB_IRB4600_40_255 ikfast_pybind test')
@@ -26,5 +26,5 @@ def test_abb_irb4600_40_255(n_attempts):
         for i, jt_name in enumerate(feasible_ranges.keys()):
             q[i] = q[i] * (feasible_ranges[jt_name]['upper'] - feasible_ranges[jt_name]['lower']) + \
                            feasible_ranges[jt_name]['lower']
-        check_q(get_fk, get_ik, q, feasible_ranges)
+        check_q(get_fk, get_ik, q, feasible_ranges, diff_tol=1e-3)
     print("Done!")
