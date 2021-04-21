@@ -3,7 +3,7 @@ import numpy as np
 from utils import check_q
 
 @pytest.mark.abb_irb4600_40_255
-# @pytest.mark.skip(reason='This ikfast cpp module need to be regenerated.')
+@pytest.mark.skip(reason='This ikfast cpp module need to be regenerated.')
 def test_abb_irb4600_40_255(n_attempts):
     from ikfast_abb_irb4600_40_255 import get_fk, get_ik, get_dof, get_free_dof
     print('*****************\n ABB_IRB4600_40_255 ikfast_pybind test')
