@@ -7,7 +7,7 @@
 #define IKFAST_HAS_LIBRARY
 #endif
 
-#include <abb_irb4600_40_255/ikfast.h>
+#include <kawasaki_rs010n/ikfast.h>
 
 #ifdef IKFAST_NAMESPACE
 using namespace IKFAST_NAMESPACE;
@@ -15,12 +15,12 @@ using namespace IKFAST_NAMESPACE;
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(ikfast_abb_irb4600_40_255, m)
+PYBIND11_MODULE(ikfast_kawasaki_rs010n, m)
 {
     m.doc() = R"pbdoc(
-        ikfast_pybind_abb_irb4600_40_255
+        ikfast_kawasaki_rs010n
         -----------------------
-        .. currentmodule:: ikfast_pybind_abb_irb4600_40_255
+        .. currentmodule:: ikfast_kawasaki_rs010n
         .. autosummary::
            :toctree: _generate
            get_ik
@@ -78,7 +78,7 @@ PYBIND11_MODULE(ikfast_abb_irb4600_40_255, m)
     py::arg("trans_list"),
     py::arg("rot_list"),
     R"pbdoc(
-        get inverse kinematic solutions for pybind_abb_irb4600_40_255
+        get inverse kinematic solutions for pybind_kawasaki_rs010n
     )pbdoc");
 
     m.def("get_fk", [](const std::vector<double> &joint_list)
