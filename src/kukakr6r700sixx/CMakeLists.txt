@@ -1,0 +1,4 @@
+pybind11_add_module(ikfast_kukakr6r700sixx
+	ikfast_pybind_kukakr6r700sixx.cpp
+	ikfast61_kukakr6r700sixx.cpp
+	)
