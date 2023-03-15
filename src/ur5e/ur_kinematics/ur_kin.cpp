@@ -11,7 +11,8 @@ namespace ur_kinematics {
     int SIGN(double x) {
       return (x > 0) - (x < 0);
     }
-    const double PI = M_PI;
+    // const double PI = M_PI;
+    const double PI = ((double)3.14159265358979);
 
     //#define UR16e_PARAMS
     #ifdef UR16e_PARAMS
