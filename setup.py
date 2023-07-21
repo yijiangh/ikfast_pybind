@@ -27,7 +27,7 @@ requirements = [
 
 # scan for all ikfast modules in the src folder
 src_path = os.path.join(ROOT_DIR, 'src')
-module_names = [f.name for f in os.scandir(src_path) if f.is_dir() and not f.name.startswith('_')]
+module_names = [f.name for f in os.scandir(src_path) if f.is_dir() and not (f.name.startswith('_') or f.name.endswith('.egg-info'))]
 print('Building ikfast modules: {}'.format(module_names))
 ext_modules = [CMakeExtension(m_name) for m_name in module_names]
 

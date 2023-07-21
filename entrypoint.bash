@@ -26,19 +26,21 @@ openrave.py --database inversekinematics --robot=robot.xml --iktype=transform6d 
 
 export NEW_IKMOD_DIR=/ikfast_pybind/src/${EXTENSION}
 
-cp /src/_template ${NEW_IKMOD_DIR}
+cp -r /ikfast_pybind/src/_template ${NEW_IKMOD_DIR}
 
 # `ikfast` generated files
-cp $(find -name 'ikfast*.Transform6D.*.cpp') ${NEW_IKMOD_DIR}/ikfast_robot.cpp
-cp $(find -name 'ikfast.h') ${NEW_IKMOD_DIR}/ikfast.h
+cp $(find . -maxdepth 1 -name 'ikfast*.Transform6D.*.cpp') ${NEW_IKMOD_DIR}/ikfast_source.cpp
+cp $(find . -maxdepth 1 -name 'ikfast.h') ${NEW_IKMOD_DIR}/ikfast.h
 
 sed -i "s/\[put_extension\]/${EXTENSION}/g" ${NEW_IKMOD_DIR}/CMakeLists.txt
 sed -i "s/\[put_extension\]/${EXTENSION}/g" ${NEW_IKMOD_DIR}/ikfast_pybind_wrapper.cpp
+sed -i "s/\[put_extension\]/${EXTENSION}/g" ${NEW_IKMOD_DIR}/test_[put_extension].py
 
-# rename urdf for testing
-mv ${URDF_FILE} ${EXTENSION}.urdf
+# move test file rename urdf for testing
+mv ${NEW_IKMOD_DIR}/test_[put_extension].py /ikfast_pybind/tests/test_${EXTENSION}.py
+mv /ikfast_pybind/data/${URDF_FILE} /ikfast_pybind/data/${EXTENSION}.urdf
 
 # append "# ikfast" to the end of the CMakeLists.txt
-cat <<EOT > src/CMakeLists.txt
-add_subdirectory(${EXTENSION})
+cat <<EOT >> /ikfast_pybind/src/CMakeLists.txt
+\nadd_subdirectory(${EXTENSION})
 EOT
