@@ -1,14 +1,12 @@
 import os
-import re
-import sys
-import platform
-import subprocess
+import argparse
 import io
 
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
 from setup_cmake_utils import CMakeExtension, CMakeBuild
+from setuptools.command.install import install
 
 
 ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -21,19 +19,17 @@ def read(*names, **kwargs):
     ).read()
 
 
-long_description = read('README.rst')
+long_description = read('README.md')
 
 requirements = [
-    'cmake>=3.18',
+    # 'cmake>=3.18',
 ]
 
-EXT_MODULES = [
-               CMakeExtension('ikfast_kuka_kr6_r900'),
-               CMakeExtension('ikfast_abb_irb4600_40_255'),
-               CMakeExtension('ikfast_ur5'),
-               CMakeExtension('ikfast_ur5e'),
-               CMakeExtension('ikfast_ur3'),
-               ]
+# scan for all ikfast modules in the src folder
+src_path = os.path.join(ROOT_DIR, 'src')
+module_names = [f.name for f in os.scandir(src_path) if f.is_dir() and not f.name.startswith('_')]
+print('Building ikfast modules: {}'.format(module_names))
+ext_modules = [CMakeExtension(m_name) for m_name in module_names]
 
 setup(
     name='ikfast_pybind',
@@ -43,14 +39,11 @@ setup(
     author='Yijiang Huang',
     author_email='yijiangh@mit.edu',
     url="https://github.com/yijiangh/ikfast_pybind",
-    long_description='%s\n%s' % (
-        re.compile('^.. start-badges.*^.. end-badges', re.M |
-                   re.S).sub('', read('README.rst')),
-        re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))
-    ),
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     # packages=['ikfast_pybind'],
     # package_dir={'': 'src'},
-    ext_modules=EXT_MODULES,
+    ext_modules=ext_modules,
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
     classifiers=[
@@ -61,7 +54,6 @@ setup(
         'Operating System :: Unix',
         'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
