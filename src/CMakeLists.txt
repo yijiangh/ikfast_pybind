@@ -7,7 +7,6 @@ add_subdirectory(abb_irb4600_40_255)
 add_subdirectory(ur3)
 add_subdirectory(ur5)
 add_subdirectory(ur5e)
-add_subdirectory(eth_rfl)
 add_subdirectory(franka_panda)
 add_subdirectory(kawasaki_rs010n)
 
