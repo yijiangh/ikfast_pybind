@@ -13,4 +13,6 @@ sphinx>=1.5
 twine
 m2r2
 numpy
+# for reading URDF joint limits in testing
+compas >= 1.14 , < 2.0
 -e .

@@ -1,4 +1,7 @@
+import os
 import numpy as np
+
+DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "src", "data")
 
 def best_sol(sols, q_guess, weights, feasible_ranges):
     """get the best solution based on UR's joint domain value and weighted joint diff

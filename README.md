@@ -48,8 +48,13 @@ Warning: this can be non-trivial and time-consuming!
   # Building using Docker
   docker build . --tag pyikfast
   # replace ${PWD} with `pwd` if you are using bash
-  docker run -it -v ${PWD}/output:/output --entrypoint bash pyikfast
+  docker run -it -v ${PWD}:/ikfast_pybind --entrypoint bash pyikfast
 ```
+
+## TODO
+
+- [ ] use github actions to build and test
+- [ ] use github actions to test new model creation workflow
 
 ## References
 
