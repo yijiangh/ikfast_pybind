@@ -11,5 +11,6 @@ pytest
 scp
 sphinx>=1.5
 twine
+m2r2
 numpy
 -e .
