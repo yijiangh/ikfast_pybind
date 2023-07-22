@@ -1,4 +1,4 @@
-import os
+import os, sys
 import argparse
 import io
 
@@ -25,11 +25,71 @@ requirements = [
     # 'cmake>=3.18',
 ]
 
+# https://github.com/primme/primme/blob/master/Python/setup.py
+# https://github.com/primme/primme/issues/37#issuecomment-692066436
+def get_numpy_options():
+   # Third-party modules - we depend on numpy for everything
+   import numpy
+   try:
+       from numpy.distutils.system_info import get_info
+   except:
+       from numpy.__config__ import get_info
+   
+   # Obtain the numpy include directory
+   numpy_include = numpy.get_include()
+
+   # Obtain BLAS/LAPACK linking options
+   lapack_info = get_info('lapack_opt')
+   blas_info = get_info('blas_opt')
+   using_atlas = False
+   using_f77blas = False
+   using_lapack = False
+   for l in lapack_info.get('libraries', []) + blas_info.get('libraries', []):
+      if "atlas" in l: using_atlas = True
+      if "f77blas" in l: using_f77blas = True
+      if "lapack" in l: using_lapack = True
+   if using_atlas and (not using_f77blas or not using_lapack):
+      lapack_info = get_info('atlas')
+      # ATLAS notices an incomplete LAPACK by not setting language to f77
+      complete_lapack = lapack_info.get('language', "") == "f77"
+      if complete_lapack:
+         blas_info = {}
+      else:
+         # If ATLAS has an incomplete LAPACK, use a regular one
+         blas_info = get_info('atlas_blas')
+         lapack_info = get_info('lapack')
+   
+   blaslapack_libraries = lapack_info.get('libraries', []) + blas_info.get('libraries', [])
+   blaslapack_library_dirs = lapack_info.get('library_dirs', []) + blas_info.get('library_dirs', [])
+   blaslapack_extra_link_args = lapack_info.get('extra_link_args', []) + blas_info.get('extra_link_args', [])
+   if not blaslapack_libraries and not blaslapack_extra_link_args:
+       blaslapack_libraries = ['lapack', 'blas']
+
+   r = dict(
+                   include_dirs = [numpy_include],
+                   library_dirs = blaslapack_library_dirs,
+                   libraries = blaslapack_libraries,
+                   extra_link_args = blaslapack_extra_link_args
+   )
+
+   # Link dynamically on Windows and statically otherwise
+   if sys.platform == 'win32':
+      r['libraries'] = r['libraries']
+
+   return r
+
 # scan for all ikfast modules in the src folder
 src_path = os.path.join(ROOT_DIR, 'src')
 module_names = [f.name for f in os.scandir(src_path) if f.is_dir() and not (f.name.startswith('_') or f.name.endswith('.egg-info'))]
 print('Building ikfast modules: {}'.format(module_names))
 ext_modules = [CMakeExtension(m_name) for m_name in module_names]
+
+try:
+   import numpy
+except:
+   raise Exception("numpy not installed; please, install numpy and scipy before primme")
+else:
+   extra_options = get_numpy_options()
 
 setup(
     name='ikfast_pybind',

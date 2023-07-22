@@ -39,16 +39,16 @@ sed -i "s/\[put_extension\]/${EXTENSION}/g" ${NEW_IKMOD_DIR}/CMakeLists.txt
 sed -i "s/\[put_extension\]/${EXTENSION}/g" ${NEW_IKMOD_DIR}/ikfast_pybind_wrapper.cpp
 sed -i "s/\[put_extension\]/${EXTENSION}/g" ${NEW_IKMOD_DIR}/test_[put_extension].py
 
-# comment out these two lines
-sed -i 's!#define IKFAST_COMPILE!// #define IKFAST_COMPILE!g' ${NEW_IKMOD_DIR}/ikfast_pybind_wrapper.cpp
-sed -i 's!IKFAST_COMPILE_ASSERT(IKFAST!// IKFAST_COMPILE_ASSERT(IKFAST!g' ${NEW_IKMOD_DIR}/ikfast_pybind_wrapper.cpp
+sed -i 's!#define IKFAST_COMPILE!// #define IKFAST_COMPILE!g' ${NEW_IKMOD_DIR}/ikfast_source.cpp
+sed -i 's!IKFAST_COMPILE_ASSERT(IKFAST!// IKFAST_COMPILE_ASSERT(IKFAST!g' ${NEW_IKMOD_DIR}/ikfast_source.cpp
+sed -i 's/isnan _isnan/isnan std::isnan/g' ${NEW_IKMOD_DIR}/ikfast_source.cpp
+sed -i 's/isinf _isinf/isinf std::isinf/g' ${NEW_IKMOD_DIR}/ikfast_source.cpp
 
 # move test file rename urdf for testing
 mv ${NEW_IKMOD_DIR}/test_[put_extension].py /ikfast_pybind/tests/test_${EXTENSION}.py
 mv ${URDF_FILE} /ikfast_pybind/data/${EXTENSION}.urdf
 
 # append "# ikfast" to the end of the CMakeLists.txt
-# ? I still can't figure out how to put a linebreak before add_subdirectory
 cat <<EOT >> /ikfast_pybind/src/CMakeLists.txt
 
 add_subdirectory(${EXTENSION})

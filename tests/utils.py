@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "src", "data")
+DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
 
 def best_sol(sols, q_guess, weights, feasible_ranges):
     """get the best solution based on UR's joint domain value and weighted joint diff
@@ -30,11 +30,12 @@ def best_sol(sols, q_guess, weights, feasible_ranges):
 
 def check_q(fk_fn, ik_fn, q, feasible_ranges, free_joint_ids=[], diff_tol=1e-3):
     pos, rot = fk_fn(q)
-    if free_joint_ids:
-        sols = ik_fn(pos, rot, [q[i] for i in free_joint_ids])
-    else:
-        sols = ik_fn(pos, rot)
+    # if free_joint_ids:
+    sols = ik_fn(pos, rot, [q[i] for i in free_joint_ids])
+    # else:
+    #     sols = ik_fn(pos, rot)
 
+    # TODO can also just iterate through all solutions and check if end effector poses agree
     qsol = best_sol(sols, q, [1.]*len(q), feasible_ranges)
     if qsol is None:
         qsol = [999.]*len(q)
