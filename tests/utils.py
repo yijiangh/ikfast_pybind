@@ -28,26 +28,48 @@ def best_sol(sols, q_guess, weights, feasible_ranges):
     return valid_sols[best_sol_ind]
 
 
-def check_q(fk_fn, ik_fn, q, feasible_ranges, free_joint_ids=[], diff_tol=1e-3):
+def check_q(fk_fn, ik_fn, q, feasible_ranges, free_joint_ids=[], diff_tol=1e-4):
+    print(q)
     pos, rot = fk_fn(q)
+    print('Desired pose:', pos, rot)
+
     # if free_joint_ids:
     sols = ik_fn(pos, rot, [q[i] for i in free_joint_ids])
     # else:
     #     sols = ik_fn(pos, rot)
+    print(sols)
+    print(len(sols))
+    assert False
 
-    # TODO can also just iterate through all solutions and check if end effector poses agree
-    qsol = best_sol(sols, q, [1.]*len(q), feasible_ranges)
-    if qsol is None:
-        qsol = [999.]*len(q)
-    diff = np.sum(np.abs(np.array(qsol) - q))
-    if diff > diff_tol:
-        print(np.array(sols))
-        print('Best q:', qsol)
-        print('Actual:', np.array(q))
-        print('Diff L1 norm:', diff)
-        print('Diff:  ', q - qsol)
-        print('Difdiv:', (q - qsol)/np.pi)
-        # if raw_input() == 'q':
-        #     sys.exit()
-        assert False
+    if len(sols) == 0:
+        return False
+
+    for sol in sols:
+        # perform fk on the solution and compare with the desired pose
+        pos_sol, rot_sol = fk_fn(sol)
+        diff_pos = np.linalg.norm(np.array(pos) - np.array(pos_sol))
+        diff_rot = np.linalg.norm(np.array(rot) - np.array(rot_sol))
+        if diff_pos > diff_tol or diff_rot > diff_tol:
+            print('Desired pose:', pos, rot)
+            print('Solution pose:', pos_sol, rot_sol)
+            print('Diff pos:', diff_pos)
+            print('Diff rot:', diff_rot)
+            assert False
+
+    return True
+
+    # qsol = best_sol(sols, q, [1.]*len(q), feasible_ranges)
+    # if qsol is None:
+    #     qsol = [999.]*len(q)
+    # diff = np.sum(np.abs(np.array(qsol) - q))
+    # if diff > diff_tol:
+    #     print(np.array(sols))
+    #     print('Best q:', qsol)
+    #     print('Actual:', np.array(q))
+    #     print('Diff L1 norm:', diff)
+    #     print('Diff:  ', q - qsol)
+    #     print('Difdiv:', (q - qsol)/np.pi)
+    #     # if raw_input() == 'q':
+    #     #     sys.exit()
+    #     assert False
 

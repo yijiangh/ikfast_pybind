@@ -22,10 +22,10 @@ def read(*names, **kwargs):
 long_description = read('README.md')
 
 requirements = [
-    # 'cmake>=3.18',
+    'numpy>=1.21.5, <2.0.0',
 ]
 
-# https://github.com/primme/primme/blob/master/Python/setup.py
+# modified from https://github.com/primme/primme/blob/master/Python/setup.py
 # https://github.com/primme/primme/issues/37#issuecomment-692066436
 def get_numpy_options():
    # Third-party modules - we depend on numpy for everything
@@ -66,30 +66,29 @@ def get_numpy_options():
        blaslapack_libraries = ['lapack', 'blas']
 
    r = dict(
-                   include_dirs = [numpy_include],
+                   include_dirs = [numpy_include, "primme/include", "primme/src/include"],
                    library_dirs = blaslapack_library_dirs,
                    libraries = blaslapack_libraries,
                    extra_link_args = blaslapack_extra_link_args
    )
 
-   # Link dynamically on Windows and statically otherwise
-   if sys.platform == 'win32':
-      r['libraries'] = r['libraries']
-
    return r
+
+try:
+   import numpy
+except:
+   raise Exception("numpy not installed; please, install numpy before primme")
+else:
+   extra_options = get_numpy_options()
 
 # scan for all ikfast modules in the src folder
 src_path = os.path.join(ROOT_DIR, 'src')
 module_names = [f.name for f in os.scandir(src_path) if f.is_dir() and not (f.name.startswith('_') or f.name.endswith('.egg-info'))]
 print('Building ikfast modules: {}'.format(module_names))
 ext_modules = [CMakeExtension(m_name) for m_name in module_names]
-
-try:
-   import numpy
-except:
-   raise Exception("numpy not installed; please, install numpy and scipy before primme")
-else:
-   extra_options = get_numpy_options()
+for m in ext_modules:
+   m.set_lapack_libs(extra_options['library_dirs'], extra_options['libraries'])
+   print(m.lapack_lib_paths)
 
 setup(
     name='ikfast_pybind',

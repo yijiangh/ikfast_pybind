@@ -30,11 +30,54 @@ If you want to add new robot models from URDF files, please refer to the [Adding
   pip install .
 ```
 
+## Example use
+
+```
+# module is named as ikfast_[robot_extension_name]
+from ikfast_abb_crb15000_5_95 import get_fk, get_ik, get_num_dofs, get_free_dofs
+
+q = [-2.63657646 -0.0617853  -3.47712997  2.49898054 -2.52778128 -0.16582804]
+position, rotation_matrix = get_fk(q)
+
+# position: [0.26235064496283567, 0.14009087927384264, 0.4693020346263909]
+# rotation_matrix: [[0.5406759469002327, -0.5079818162906635, -0.6705400769242471], [0.7000046675058794, 0.7137441604265776, 0.02372211893872128], [0.46654365917191476, -0.4822071627163975, 0.7414939421947302]]
+# rotation matrix is represented as a list of row vectors
+
+sols = get_ik(pos, rot)
+
+# in this case, sols is a list of 6 solutions (number of solutions might vary, depending on the robot model and the end effector pose)
+# sols = [[-2.677129219514031, -1.960941287457495, -0.01106834923090716, -1.5223522515329055, 2.9063099129126977, -0.38755718968184494], [-2.462522011120452, -1.849866796374988, -0.16773812158371804, 1.3011604100510745, -2.813500265809647, 2.6268679293971933], [0.5089732622755507, 1.9672642624270855, -2.814065035072528, 0.685267897567732, 2.7355477710862828, -1.3219543618811413], [0.6132567402414596, 1.8349107589147142, -2.3732420854723038, -2.683753814523185, -2.43160850087894, 1.6333350305270915], [-2.5541197756335254, -0.7657130735027564, -2.371472482718502, 0.303986095361348, -1.941822962815811, 1.3639870138920118], [-2.576171906556894, -0.38817105888328834, -2.8244159164056475, -2.8535006401539187, 1.8761237312641206, -1.823266925815287], [0.5794016926960825, 0.3881580373170367, 0.13744051886892136, 0.28233232570071304, 1.4356135803046326, -1.9377257941841823], [0.572866436900018, 0.7658018156114295, -0.30358025663392274, -2.863611514167973, -1.498111500637429, 1.215923255645185]]
+
+```
+
 ## Adding new robots
 
 ### Docker workflow (recommended)
 
 Using the Dockerfile and the library generation workflow in [pyikfast](https://github.com/cyberbotics/pyikfast), we can now (relatively) easily generate new ikfast modules for new robot models!
+
+First, save your URDF file in the `data` folder (only the URDF suffices, meshes not needed), and then run the following command:
+
+```
+docker build . --tag openrave-ros-indigo
+docker run -v ${PWD}:/ikfast_pybind openrave-ros-indigo [urdf_file_name] [base_link] [effector_link_name] [module_extension]
+```
+
+For example, for a `crb15000_5_95.urdf` file, we command:
+
+```
+docker run -v ${PWD}:/ikfast_pybind openrave-ros-indigo crb15000_5_95.urdf base_link tool0 abb_crb15000_5_95
+```
+And the resulting ikfast module will be named as `ikfast_abb_crb15000_5_95`.
+
+After that, simply run `pip install .` to install the new module.
+
+For testing, issue the following commands instead:
+
+```
+pip install . -r requirements-dev.txt
+pytest tests/test_[module_extension].py
+```
 
 ### Installing openrave from source
 
@@ -46,9 +89,9 @@ Warning: this can be non-trivial and time-consuming!
 
 ```
   # Building using Docker
-  docker build . --tag pyikfast
+  docker build . --tag openrave-ros-indigo
   # replace ${PWD} with `pwd` if you are using bash
-  docker run -it -v ${PWD}:/ikfast_pybind --entrypoint bash pyikfast
+  docker run -it -v ${PWD}:/ikfast_pybind --entrypoint bash openrave-ros-indigo
 ```
 
 ## TODO

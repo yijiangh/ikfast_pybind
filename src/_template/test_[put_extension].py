@@ -21,10 +21,12 @@ def test_[put_extension](n_attempts):
             feasible_ranges[joint.name] = {'lower': joint.limit.lower, 'upper': joint.limit.upper}
 
     print("Testing random configurations...")
+    n_success = 0
     for _ in range(n_attempts):
         q = np.random.rand(n_jts)
         for i, jt_name in enumerate(feasible_ranges.keys()):
             q[i] = q[i] * (feasible_ranges[jt_name]['upper'] - feasible_ranges[jt_name]['lower']) + \
                            feasible_ranges[jt_name]['lower']
-        check_q(get_fk, get_ik, q, feasible_ranges, free_joint_ids=free_jts)
+        success = check_q(get_fk, get_ik, q, feasible_ranges, free_joint_ids=free_jts)
+    print("Success rate: {}".format(n_success/n_attempts))
     print("Done!")

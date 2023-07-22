@@ -15,16 +15,22 @@ def test_abb_crb15000_5_95(n_attempts):
     urdf_path = os.path.join(DATA_DIR, 'abb_crb15000_5_95.urdf')
     robot_model = RobotModel.from_urdf_file(urdf_path)
     feasible_ranges = {}
-    for joint in robot_model.iter_joints():
+    for joint in robot_model.joints:
         # add joint limits if it is not fixed
-        if joint.limit.lower is not None and joint.limit.upper is not None:
+        print(joint.name)
+        # TODO check if joint is fixed
+        if joint.limit and joint.limit.lower is not None and joint.limit.upper is not None:
             feasible_ranges[joint.name] = {'lower': joint.limit.lower, 'upper': joint.limit.upper}
+    assert len(feasible_ranges) == n_jts
 
     print("Testing random configurations...")
+    n_success = 0
     for _ in range(n_attempts):
         q = np.random.rand(n_jts)
         for i, jt_name in enumerate(feasible_ranges.keys()):
             q[i] = q[i] * (feasible_ranges[jt_name]['upper'] - feasible_ranges[jt_name]['lower']) + \
                            feasible_ranges[jt_name]['lower']
-        check_q(get_fk, get_ik, q, feasible_ranges, free_joint_ids=free_jts)
+        success = check_q(get_fk, get_ik, q, feasible_ranges, free_joint_ids=free_jts)
+        n_success += int(success)
+    print("Success rate: {}".format(n_success/n_attempts))
     print("Done!")

@@ -23,6 +23,15 @@ class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
         Extension.__init__(self, name, sources=[])
         self.sourcedir = os.path.abspath(sourcedir)
+        self.lapack_lib_paths = ""
+
+    def set_lapack_libs(self, library_dirs, libraries):
+        """set LAPACK library for linking
+        """
+        if platform.system() == "Windows":
+            self.lapack_lib_paths = ""
+            for libdir, lib in zip(library_dirs, libraries):
+                self.lapack_lib_paths += ";" + os.path.join(libdir, lib + '.lib' )
 
 
 class CMakeBuild(build_ext):
@@ -54,6 +63,8 @@ class CMakeBuild(build_ext):
             if sys.maxsize > 2**32:
                 cmake_args += ['-A', 'x64']
             build_args += ['--', '/m']
+            if ext.lapack_lib_paths:
+                cmake_args += ['-DLAPACK_LIBRARIES=' + ext.lapack_lib_paths]
         else:
             cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
             build_args += ['--', '-j2']
