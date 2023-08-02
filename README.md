@@ -24,6 +24,20 @@ If you want to add new robot models from URDF files, please refer to the [Adding
 
 ## Installation
 
+### For Windows
+
+Make sure you uninstall `numpy` that is installed via `pip`, and then install `numpy` via `conda`.
+This is because some ikfast module needs lapack C routines, and we rely on `numpy` and `mkl-devel` to link the correct lapack library.
+
+From [this post](https://github.com/primme/primme/issues/37#issuecomment-692066436):
+> The Windows' numpy version on pypi is shipped with OpenBLAS dlls, but not the lib files required by the linker. The errors showed on previous comments came from the linker (error LNKXXXX).
+
+```bash
+conda install numpy==1.21.5 mkl-devel
+```
+
+### Package installation
+
 ```
   git clone --recursive https://github.com/yijiangh/ikfast_pybind
   cd ikfast_pybind
@@ -36,18 +50,18 @@ If you want to add new robot models from URDF files, please refer to the [Adding
 # module is named as ikfast_[robot_extension_name]
 from ikfast_abb_crb15000_5_95 import get_fk, get_ik, get_num_dofs, get_free_dofs
 
-q = [-2.63657646 -0.0617853  -3.47712997  2.49898054 -2.52778128 -0.16582804]
+q = [-2.63657646, -0.0617853, -3.47712997, 2.49898054, -2.52778128, -0.16582804]
 position, rotation_matrix = get_fk(q)
 
 # position: [0.26235064496283567, 0.14009087927384264, 0.4693020346263909]
 # rotation_matrix: [[0.5406759469002327, -0.5079818162906635, -0.6705400769242471], [0.7000046675058794, 0.7137441604265776, 0.02372211893872128], [0.46654365917191476, -0.4822071627163975, 0.7414939421947302]]
 # rotation matrix is represented as a list of row vectors
 
-sols = get_ik(pos, rot)
+free_jt_values = [0.0 for _ in get_free_dofs()] 
+sols = get_ik(position, rotation_matrix, free_jt_values)
 
 # in this case, sols is a list of 6 solutions (number of solutions might vary, depending on the robot model and the end effector pose)
-# sols = [[-2.677129219514031, -1.960941287457495, -0.01106834923090716, -1.5223522515329055, 2.9063099129126977, -0.38755718968184494], [-2.462522011120452, -1.849866796374988, -0.16773812158371804, 1.3011604100510745, -2.813500265809647, 2.6268679293971933], [0.5089732622755507, 1.9672642624270855, -2.814065035072528, 0.685267897567732, 2.7355477710862828, -1.3219543618811413], [0.6132567402414596, 1.8349107589147142, -2.3732420854723038, -2.683753814523185, -2.43160850087894, 1.6333350305270915], [-2.5541197756335254, -0.7657130735027564, -2.371472482718502, 0.303986095361348, -1.941822962815811, 1.3639870138920118], [-2.576171906556894, -0.38817105888328834, -2.8244159164056475, -2.8535006401539187, 1.8761237312641206, -1.823266925815287], [0.5794016926960825, 0.3881580373170367, 0.13744051886892136, 0.28233232570071304, 1.4356135803046326, -1.9377257941841823], [0.572866436900018, 0.7658018156114295, -0.30358025663392274, -2.863611514167973, -1.498111500637429, 1.215923255645185]]
-
+# sols = [[0.1785012616767494, -0.06199018233064224, 0.9436855502338978, 1.3325306149957543, 2.9945201652283844, 1.972264584727056], [-2.8723216577666806, 0.07706247653191295, 2.4859280781704323, -0.6391567407014379, 2.797466174104682, 3.1039525057376918], [0.595183983463263, 0.04638407172278151, 0.9972710436611631, -1.8073165482899924, -2.722515509853957, -1.5229800022737439], [-2.6365764600000077, -0.061785300000067114, 2.80605533717965, 2.498980539999991, -2.5277812799999997, -0.1658280399999971], [0.3664639454322902, 2.292030718140481, 2.8234779285018097, -0.2965154649191957, -1.115407403792898, 0.6302298067592147], [0.4262690963574123, 2.671934012447336, 2.473145865089277, 2.805800126894165, 1.1359578012309193, -2.547101913122589], [-2.813459022748522, -2.292502631009238, 0.7896485486038122, 2.7485290573391628, -0.6723531017436907, 0.8406712722839281], [-2.6627850700615348, -2.6707543898059822, 1.1132893418128118, -0.5215490614298172, 0.7239187102366416, -2.329787315858479]]
 ```
 
 ## Adding new robots
@@ -62,6 +76,9 @@ First, save your URDF file in the `data` folder (only the URDF suffices, meshes 
 docker build . --tag openrave-ros-indigo
 docker run -v ${PWD}:/ikfast_pybind openrave-ros-indigo [urdf_file_name] [base_link] [effector_link_name] [module_extension]
 ```
+
+TODO:
+kuka_kr6_r900.urdf robot_base_link robot_tool0 kr6_r900_6b
 
 For example, for a `crb15000_5_95.urdf` file, we command:
 
@@ -86,6 +103,7 @@ Warning: this can be non-trivial and time-consuming!
 
 ## Development
 
+TODO
 
 ```
   # Building using Docker
