@@ -24,17 +24,24 @@ If you want to add new robot models from URDF files, please refer to the [Adding
 
 ## Installation
 
-### For Windows
+### Prerequisites for Windows
 
-Make sure you uninstall `numpy` that is installed via `pip`, and then install `numpy` via `conda`.
+We ONLY support installing from **conda** on Windows (pip not supported).
+
+Make sure you **uninstall `numpy` that is installed via `pip`**, and then install `numpy` via `conda`.
+
+```bash
+conda install numpy==1.21.5 mkl-devel cmake
+```
+
+<details>
+  <summary>Click for reasons</summary>
+
 This is because some ikfast module needs lapack C routines, and we rely on `numpy` and `mkl-devel` to link the correct lapack library.
 
 From [this post](https://github.com/primme/primme/issues/37#issuecomment-692066436):
 > The Windows' numpy version on pypi is shipped with OpenBLAS dlls, but not the lib files required by the linker. The errors showed on previous comments came from the linker (error LNKXXXX).
-
-```bash
-conda install numpy==1.21.5 mkl-devel
-```
+</details>
 
 ### Package installation
 
@@ -65,6 +72,8 @@ sols = get_ik(position, rotation_matrix, free_jt_values)
 ```
 
 ## Adding new robots
+
+🚧 Not fully tested yet!
 
 ### Docker workflow (recommended)
 

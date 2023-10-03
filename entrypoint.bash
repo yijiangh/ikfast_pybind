@@ -6,8 +6,9 @@ EFFECTOR=${3}
 EXTENSION=${4}
 
 # Generate inverse kinematics files
-cp /ikfast_pybind/data/${URDF_FILE} ${URDF_FILE}
-./ros_entrypoint.sh
+cp ikfast_pybind/data/${URDF_FILE} ${URDF_FILE}
+# source ros_entrypoint.sh
+source /opt/ros/kinetic/local_setup.bash
 rosrun collada_urdf urdf_to_collada ${URDF_FILE} robot.dae
 python round_collada_numbers.py robot.dae robot.rounded.dae 5
 cat <<EOT > robot.xml
@@ -27,9 +28,9 @@ openrave0.9.py --database inversekinematics --robot=robot.xml --iktype=transform
 # [archived] specify the free joint
 # python `openrave-config --python-dir`/openravepy/_openravepy_/ikfast.py --robot=robot.dae --iktype=transform6d --baselink=1 --eelink=9  --freeindex=4 --savefile=ikfast*.Transform6D.*.cpp
 
-NEW_IKMOD_DIR=/ikfast_pybind/src/${EXTENSION}
+NEW_IKMOD_DIR=ikfast_pybind/src/${EXTENSION}
 
-cp -r /ikfast_pybind/src/_template ${NEW_IKMOD_DIR}
+cp -r ikfast_pybind/src/_template ${NEW_IKMOD_DIR}
 
 # `ikfast` generated files
 cp $(find ~/.openrave/ -name 'ikfast*.Transform6D.*.cpp') ${NEW_IKMOD_DIR}/ikfast_source.cpp
@@ -45,11 +46,11 @@ sed -i 's/isnan _isnan/isnan std::isnan/g' ${NEW_IKMOD_DIR}/ikfast_source.cpp
 sed -i 's/isinf _isinf/isinf std::isinf/g' ${NEW_IKMOD_DIR}/ikfast_source.cpp
 
 # move test file rename urdf for testing
-mv ${NEW_IKMOD_DIR}/test_[put_extension].py /ikfast_pybind/tests/test_${EXTENSION}.py
-mv ${URDF_FILE} /ikfast_pybind/data/${EXTENSION}.urdf
+mv ${NEW_IKMOD_DIR}/test_[put_extension].py ikfast_pybind/tests/test_${EXTENSION}.py
+mv ${URDF_FILE} ikfast_pybind/data/${EXTENSION}.urdf
 
 # append "# ikfast" to the end of the CMakeLists.txt
-cat <<EOT >> /ikfast_pybind/src/CMakeLists.txt
+cat <<EOT >> ikfast_pybind/src/CMakeLists.txt
 
 add_subdirectory(${EXTENSION})
 EOT
