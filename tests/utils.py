@@ -37,9 +37,8 @@ def check_q(fk_fn, ik_fn, q, feasible_ranges, free_joint_ids=[], diff_tol=1e-4):
     sols = ik_fn(pos, rot, [q[i] for i in free_joint_ids])
     # else:
     #     sols = ik_fn(pos, rot)
-    print(sols)
-    print(len(sols))
-    assert False
+    # print(sols)
+    # print(len(sols))
 
     if len(sols) == 0:
         return False
