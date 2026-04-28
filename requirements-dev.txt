@@ -15,4 +15,7 @@ m2r2
 numpy
 # for reading URDF joint limits in testing
 compas >= 1.14 , < 2.0
+# Installs the current checkout in editable mode, so use:
+#   pip install -r requirements-dev.txt
+# and do not combine it with an additional `pip install .`
 -e .

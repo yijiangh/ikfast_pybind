@@ -29,9 +29,7 @@ def best_sol(sols, q_guess, weights, feasible_ranges):
 
 
 def check_q(fk_fn, ik_fn, q, feasible_ranges, free_joint_ids=[], diff_tol=1e-4):
-    print(q)
     pos, rot = fk_fn(q)
-    print('Desired pose:', pos, rot)
 
     # if free_joint_ids:
     sols = ik_fn(pos, rot, [q[i] for i in free_joint_ids])
@@ -71,4 +69,3 @@ def check_q(fk_fn, ik_fn, q, feasible_ranges, free_joint_ids=[], diff_tol=1e-4):
     #     # if raw_input() == 'q':
     #     #     sys.exit()
     #     assert False
-

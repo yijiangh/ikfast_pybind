@@ -10,3 +10,5 @@ add_subdirectory(ur5e)
 add_subdirectory(franka_panda)
 add_subdirectory(kawasaki_rs010n)
 add_subdirectory(abb_crb15000_5_95)
+
+add_subdirectory(aubo_i3H)

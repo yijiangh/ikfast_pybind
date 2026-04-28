@@ -1,8 +1,8 @@
 
 # ikfast_pybind
 
-[![Github Actions Build Status](https://github.com/yijiangh/ikfast_pybind/workflows/build/badge.svg)](https://github.com/compas-dev/compas_fab/actions)
-[![License](https://img.shields.io/github/license/yijiangh/ikfast_pybind.svg)](https://pypi.python.org/pypi/ikfast_pybind)
+[![Github Actions Build Status](https://github.com/yslbit/ikfast_pybind_aubo/workflows/build/badge.svg)](https://github.com/yslbit/ikfast_pybind_aubo/actions)
+[![License](https://img.shields.io/github/license/yslbit/ikfast_pybind_aubo.svg)](https://github.com/yslbit/ikfast_pybind_aubo/blob/main/LICENSE)
 
 **ikfast_pybind** is a python binding generation library for the analytic kinematics engine [IKfast](http://openrave.org/docs/1.8.2/openravepy/ikfast/). 
 The python bindings are generated via [pybind11](https://github.com/pybind/pybind11) a [CMake](https://cmake.org/)-based build system.
@@ -16,11 +16,13 @@ The ikfast backend is C++ code, and it only performs geometric kinematic computa
 However, **ikfast knows nothing about the robot's joint limits and collision models**, so it is up to the user to filter the solutions and check for collisions.
 
 **Note:** 
-`ikfast_pybind` contains a few commonly used industrial robot models to allow pip install and quick use.
-`ikfast_pybind` includes the ikfast cpp code for these robots, but it mainly takes care of the compilation and wrapping of the ikfast cpp code into python bindings.
+This repository focuses on the `aubo_i3H` IKFast generation workflow.
+It includes the generated IKFast C++ source, the pybind11 wrapper, and the build scripts needed to compile the Python module.
 
-THe actual ikfast cpp code generation from a given robot model is done by OpenRave's ikfast module, which is not included in this library.
-If you want to add new robot models from URDF files, please refer to the [Adding new robots](#adding-new-robots) section.
+The actual IKFast C++ code generation is done by OpenRAVE's `ikfast` module.
+This repository documents the `aubo_i3H` workflow in the [Generating `aubo_i3H` with Docker](#generating-aubo_i3h-with-docker) section.
+
+If you want to add a new robot, start from the `yh/add_robot_from_docker` branch.
 
 ## Installation
 
@@ -46,85 +48,130 @@ From [this post](https://github.com/primme/primme/issues/37#issuecomment-6920664
 ### Package installation
 
 ```
-  git clone --recursive https://github.com/yijiangh/ikfast_pybind
-  cd ikfast_pybind
+  git clone --recursive https://github.com/yslbit/ikfast_pybind_aubo.git
+  cd ikfast_pybind_aubo
   pip install .
 ```
 
 ## Example use
 
 ```
-# module is named as ikfast_[robot_extension_name]
-from ikfast_abb_crb15000_5_95 import get_fk, get_ik, get_num_dofs, get_free_dofs
+# module is named as ikfast_aubo_i3H
+from ikfast_aubo_i3H import get_fk, get_ik, get_num_dofs, get_free_dofs
 
-q = [-2.63657646, -0.0617853, -3.47712997, 2.49898054, -2.52778128, -0.16582804]
+q = [0.0] * get_num_dofs()
 position, rotation_matrix = get_fk(q)
-
-# position: [0.26235064496283567, 0.14009087927384264, 0.4693020346263909]
-# rotation_matrix: [[0.5406759469002327, -0.5079818162906635, -0.6705400769242471], [0.7000046675058794, 0.7137441604265776, 0.02372211893872128], [0.46654365917191476, -0.4822071627163975, 0.7414939421947302]]
-# rotation matrix is represented as a list of row vectors
 
 free_jt_values = [0.0 for _ in get_free_dofs()] 
 sols = get_ik(position, rotation_matrix, free_jt_values)
-
-# in this case, sols is a list of 6 solutions (number of solutions might vary, depending on the robot model and the end effector pose)
-# sols = [[0.1785012616767494, -0.06199018233064224, 0.9436855502338978, 1.3325306149957543, 2.9945201652283844, 1.972264584727056], [-2.8723216577666806, 0.07706247653191295, 2.4859280781704323, -0.6391567407014379, 2.797466174104682, 3.1039525057376918], [0.595183983463263, 0.04638407172278151, 0.9972710436611631, -1.8073165482899924, -2.722515509853957, -1.5229800022737439], [-2.6365764600000077, -0.061785300000067114, 2.80605533717965, 2.498980539999991, -2.5277812799999997, -0.1658280399999971], [0.3664639454322902, 2.292030718140481, 2.8234779285018097, -0.2965154649191957, -1.115407403792898, 0.6302298067592147], [0.4262690963574123, 2.671934012447336, 2.473145865089277, 2.805800126894165, 1.1359578012309193, -2.547101913122589], [-2.813459022748522, -2.292502631009238, 0.7896485486038122, 2.7485290573391628, -0.6723531017436907, 0.8406712722839281], [-2.6627850700615348, -2.6707543898059822, 1.1132893418128118, -0.5215490614298172, 0.7239187102366416, -2.329787315858479]]
 ```
 
-## Adding new robots
+## Generating `aubo_i3H` with Docker
 
-🚧 Not fully tested yet!
+This repository focuses on generating the IKFast module for `aubo_i3H`.
 
-### Docker workflow (recommended)
+### 1. Download the input files into `data/aubo_i3H`
 
-Using the Dockerfile and the library generation workflow in [pyikfast](https://github.com/cyberbotics/pyikfast), we can now (relatively) easily generate new ikfast modules for new robot models!
+Create the following directory layout inside this repository:
 
-First, save your URDF file in the `data` folder (only the URDF suffices, meshes not needed), and then run the following command:
-
+```text
+data/
+  aubo_i3H/
+    aubo_i3H.urdf
+    meshes/
+      visual/
+        link0.DAE
+        link1.DAE
+        link2.DAE
+        link3.DAE
+        link4.DAE
+        link5.DAE
+        link6.DAE
+      collision/
+        link0.STL
+        link1.STL
+        link2.STL
+        link3.STL
+        link4.STL
+        link5.STL
+        link6.STL
 ```
+
+The URDF should stay at:
+
+```bash
+data/aubo_i3H/aubo_i3H.urdf
+```
+
+The mesh files must keep the same relative paths used by the URDF, so keep the `meshes/visual` and `meshes/collision` folders beside it.
+
+### 2. Build the Docker image
+
+Build the generator image from the repository root:
+
+```bash
 docker build . --tag openrave-ros-indigo
-docker run -v ${PWD}:/ikfast_pybind openrave-ros-indigo [urdf_file_name] [base_link] [effector_link_name] [module_extension]
 ```
 
-TODO:
-kuka_kr6_r900.urdf robot_base_link robot_tool0 kr6_r900_6b
+The image includes the compatibility fixes required by this legacy OpenRAVE workflow:
 
-For example, for a `crb15000_5_95.urdf` file, we command:
+- `sympy==0.7.1`
+- `python-lxml`
+- `build-essential`
+- `libblas-dev`
+- `liblapack-dev`
 
-```
-docker run -v ${PWD}:/ikfast_pybind openrave-ros-indigo crb15000_5_95.urdf base_link tool0 abb_crb15000_5_95
-```
-And the resulting ikfast module will be named as `ikfast_abb_crb15000_5_95`.
+### 3. Generate the `aubo_i3H` IKFast sources
 
-After that, simply run `pip install .` to install the new module.
+The `aubo_i3H` kinematic chain uses:
 
-For testing, issue the following commands instead:
+- `base_link` as the base link
+- `wrist3_Link` as the end-effector link
+- `aubo_i3H` as the module extension name
 
-```
-pip install . -r requirements-dev.txt
-pytest tests/test_[module_extension].py
-```
+Run:
 
-### Installing openrave from source
-
-If you don't like docker and want to install openrave and ikfast manually, you can follow the instructions in [this tutorial](http://docs.ros.org/kinetic/api/framefab_irb6600_support/html/doc/ikfast_tutorial.html).
-Warning: this can be non-trivial and time-consuming!
-
-## Development
-
-TODO
-
-```
-  # Building using Docker
-  docker build . --tag openrave-ros-indigo
-  # replace ${PWD} with `pwd` if you are using bash
-  docker run -it -v ${PWD}:/ikfast_pybind --entrypoint bash openrave-ros-indigo
+```bash
+docker run --rm \
+  -e TMPDIR=/tmp \
+  -v ${PWD}:/ikfast_pybind \
+  openrave-ros-indigo \
+  aubo_i3H/aubo_i3H.urdf \
+  base_link \
+  wrist3_Link \
+  aubo_i3H
 ```
 
-## TODO
+### 4. Check the generated files
 
-- [ ] use github actions to build and test
-- [ ] use github actions to test new model creation workflow
+After the command finishes, the repository should contain:
+
+```text
+src/aubo_i3H/
+data/aubo_i3H.urdf
+tests/test_aubo_i3H.py
+```
+
+If Docker writes the generated files back as `root` or `nobody`, fix ownership before editing them locally:
+
+```bash
+sudo chown -R $USER:$USER src/aubo_i3H data/aubo_i3H.urdf tests/test_aubo_i3H.py
+```
+
+### 5. Install and test
+
+Install the generated module:
+
+```bash
+pip install .
+```
+
+For testing:
+
+```bash
+pip install -r requirements-dev.txt
+pytest tests/test_aubo_i3H.py
+```
 
 ## References
 
