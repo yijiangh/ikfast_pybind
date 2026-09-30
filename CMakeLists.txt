@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.5)
 project(ikfast_pybind)
 
 set(IKFAST_PYBIND_ROOT "${CMAKE_CURRENT_LIST_DIR}")

@@ -38,7 +38,7 @@ Prerequisites
 **On Unix (Linux, OS X)**
 
 * A compiler with C++11 support
-* CMake >= 2.8.12
+* CMake >= 3.5
 
 **On Windows**
 
